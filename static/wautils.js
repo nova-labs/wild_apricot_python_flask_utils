@@ -179,6 +179,18 @@ $(document).on('click', '#nav_logout',function()  {
 
 })
 */
+$(document).on('click','#event_filter_past', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.set('filter', 'IsUpcoming eq False');
+  window.location.search = urlParams;
+})
+
+$(document).on('click','#event_filter_upcoming', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  urlParams.delete('filter');
+  window.location.search = urlParams;
+})
+
 
 function extract_contentfield(j,fieldname) {
   // called from the get 
@@ -1160,11 +1172,17 @@ function signoffs_save() {
   })
 }
 
+function get_event_filter() {
+  var searchParams = new URLSearchParams(window.location.search);
+  return searchParams.get('filter') || "IsUpcoming eq True";
+}
+
 function get_events() {
+
   // get contacts list
   // https://app.swaggerhub.com/apis-docs/WildApricot/wild-apricot_public_api/2.1.0#/Contacts/GetContactsList
   fep  = $.param({
-    '$filter':'IsUpcoming eq True',
+    '$filter': get_event_filter(),
     '$sort':'ByStartDate asc'
   } )
   ep = $.param( {'endpoint':'accounts/$accountid/events/?' + fep})
@@ -1441,7 +1459,13 @@ function process_events(j) {
   } else  {
 
     o = ''
-    o += '<h3>Upcoming Events</h3>'
+    o += '<h3>'
+    o += '<span>Events</span>'
+    o += '<div class="float-right btn-group" role="group">'
+    o += '  <button type="button" class="btn btn-light" id="event_filter_past">Past Events</button>'
+    o += '  <button type="button" class="btn btn-light" id="event_filter_upcoming">Upcoming Events</button>'
+    o += '</div>'
+    o += '</h3>'
 
     o += '<table id="events_table"></table>'
 
