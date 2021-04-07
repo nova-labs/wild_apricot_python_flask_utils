@@ -70,9 +70,9 @@ class WildApricotSignIn(OAuthSignIn):
 
         if 'code' not in request.args:
             return None, None, None
-    
+
         sys.stderr.write("oauth callback() --------------------------------------\n")
-        secret_str = base64.standard_b64encode((self.consumer_id + ':' + self.consumer_secret).encode()).decode() 
+        secret_str = base64.standard_b64encode((self.consumer_id + ':' + self.consumer_secret).encode()).decode()
 
         oauth_session = self.service.get_auth_session(
             data={
@@ -82,11 +82,11 @@ class WildApricotSignIn(OAuthSignIn):
                   'scope'        : 'auto',
                   'redirect_uri' : self.get_callback_url()
                   },
-            
+
             headers={'Authorization':'Basic ' + secret_str,
                      'ContentType': 'application/x-www-form-urlencoded'},
             decoder=decode_json
-        
+
         )
 
         account = current_app.config['OAUTH_CREDENTIALS'][self.provider_name]['account']
@@ -96,4 +96,4 @@ class WildApricotSignIn(OAuthSignIn):
         sys.stderr.write("--------------------------------------\n")
 
         return (me,oauth_session)
-         
+

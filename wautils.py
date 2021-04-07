@@ -2,10 +2,10 @@
 
 """
 
-wautils 
+wautils
 
-    A set of web-based tools for Wild Apricot Integration  
-    
+    A set of web-based tools for Wild Apricot Integration
+
     o Accepts your Wild Apricot Credentials via Wild Apricot OAuth
     o Determines if you are have Wild Apricot admin credentials
     o Give you further access only if you have admin credentials
@@ -52,8 +52,8 @@ import pprint # for debugging
 ex_code_fail    = 1 # used with sys.exit()
 ex_code_success = 0
 
-# get keys and config info from .env 
-load_dotenv() 
+# get keys and config info from .env
+load_dotenv()
 
 wa_uri_prefix          = "https://api.wildapricot.org/v2.2/"
 wa_uri_prefix_accounts = wa_uri_prefix + "Accounts/"
@@ -62,7 +62,7 @@ wa_uri_prefix_accounts = wa_uri_prefix + "Accounts/"
 app = Flask(__name__)
 app.secret_key = os.environ['FLASK_SECRET_KEY']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
 app.config['OAUTH_CREDENTIALS'] = {
     'wildapricot' : {
@@ -74,7 +74,7 @@ app.config['OAUTH_CREDENTIALS'] = {
 }
 
 # rest api support
-restapi = FlaskRestAPI(app) 
+restapi = FlaskRestAPI(app)
 
 # bootstrap framework support
 Bootstrap(app)
@@ -126,7 +126,7 @@ def is_account_admin(waco):
   if waco['IsAccountAdministrator']:
     return True
   else:
-    return False 
+    return False
 
 
 def has_wautils_signoff(waco):
@@ -139,7 +139,7 @@ def has_wautils_signoff(waco):
   if len(sos):
     for so in sos['Value']:
       if so['Label'] == '[nlgroup] wautils':
-        return True 
+        return True
   return False
 
 @app.route('/')
@@ -201,7 +201,7 @@ def dump_events():
     events         = json.loads(resp.read().decode())
     ran_chars      = ''.join(random.choice(pos_ran_chars) for _ in range (10))
     event_file_name= '/tmp/events_' + ran_chars + '.csv'
-    event_file     = open(event_file_name,'w') 
+    event_file     = open(event_file_name,'w')
     event_file_csv = csv.writer(event_file)
 
     ar = []
@@ -303,7 +303,7 @@ def dump_events():
 def members():
     wapi,creds = wapi_init()
 
-    global g  
+    global g
     # things in g object can be accessed in jinja templates
     g.wa_accounts_contact_me = wapi.execute_request(
                 wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
@@ -332,21 +332,21 @@ def utils():
 @app.route('/logout/<provider>')
 @login_required
 def logout(provider):
-    
+
     if not current_user.is_anonymous:
         # if user is logged in..
         # first tell oauth who will give us a nonce token
-        payload = { 
+        payload = {
                 'token'       : current_user.token,
                 'email'       : current_user.email,
                 'redirectUrl' : request.environ['HTTP_REFERER']
         }
-        rq = requests.post(os.environ['WA_DEAUTHORIZE_URL'], json = payload) 
+        rq = requests.post(os.environ['WA_DEAUTHORIZE_URL'], json = payload)
 
         if rq.reason == 'OK':
             # then call WA's logout url with that nonce, and it'll really log them out
             logout_user()
-            url = os.environ['WA_LOGOUT_URL'] + '?nonce=' + rq.json()['nonce'] 
+            url = os.environ['WA_LOGOUT_URL'] + '?nonce=' + rq.json()['nonce']
             return redirect(url)
 
 
@@ -370,18 +370,18 @@ def oauth_authorize(provider):
 @app.route('/callback/<provider>')
 def oauth_callback(provider):
     # oauth calls us once we've been granted a token
-    
+
     if not current_user.is_anonymous:
         # not logged in
         return redirect(url_for('index'))
 
     oauth = OAuthSignIn.get_provider(provider)
-    
+
     me,oauth_session  = oauth.callback()
 
     if not('Email' in me):
         flash("ERROR oauth_callback(): " + me['Message'],'error')
-        return redirect(url_for('index')) 
+        return redirect(url_for('index'))
 
     sys.stderr.write("oauth_callback()\n")
 
@@ -398,7 +398,7 @@ def oauth_callback(provider):
                )
        db.session.add(user)
        db.session.commit()
-    else: 
+    else:
        user.token = oauth_session.access_token
        db.session.commit()
 
@@ -411,8 +411,8 @@ def wa_get_contacts():
     # returns them formatted on screen
     # for testing only
     wapi,creds = wapi_init()
-    response =   wapi.execute_request_raw(wa_uri_prefix_accounts + 
-                 creds['account'] + 
+    response =   wapi.execute_request_raw(wa_uri_prefix_accounts +
+                 creds['account'] +
                  "/contacts/?$async=false")
 
     wa_accounts_contact_me = wapi.execute_request(
@@ -483,10 +483,10 @@ def wa_get_any_endpoint_rest():
         if re.match(r'^accounts/\d+/EventRegistrationTypes/\d+$',urllib.parse.urlparse(ep).path) is not None:
             return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
 
-        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/events/'): 
+        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/events/'):
             return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
 
-        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/eventregistrations'): 
+        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/eventregistrations'):
             return  wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
 
         return {"error":1,"error_message":"permission denied"}
@@ -548,7 +548,7 @@ def wa_put_any_endpoint_rest():
 
 ## end rest stuff
 
-            
+
 ################################################################################
 # Execution starts here
 if __name__ == '__main__':
@@ -561,7 +561,7 @@ if __name__ == '__main__':
     sys.stderr.write(usage_mesg)
     sys.exit(ex_code_fail)
 
-    
+
   for o,a in ops:
 
     if (o == '--debug'):

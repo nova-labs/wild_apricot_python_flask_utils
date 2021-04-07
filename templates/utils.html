@@ -5,11 +5,11 @@ bootstrap friendly manner #}
 {% import "bootstrap/utils.html" as utils %}
 {% block title %}utils{% endblock %}
 
-{% block styles %}  
-  {{ super() }} 
+{% block styles %}
+  {{ super() }}
   {# Call in our scripts *after* bootstrap calls in jquery #}
   <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
-{% endblock %} 
+{% endblock %}
 
 
 {# Inside the ``content`` is where you should place most of your own stuff.
@@ -56,9 +56,9 @@ intact. #}
 </div>
 {%- endblock %}
 
-{% block scripts %}  
-{{ super() }} 
+{% block scripts %}
+{{ super() }}
 {# Call in our scripts *after* bootstrap calls in jquery #}
 <script type="text/javascript" src="{{ url_for('static', filename='wautils.js') }}"></script>
-{% endblock %} 
+{% endblock %}
 {# #}

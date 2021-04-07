@@ -12,7 +12,7 @@ Web interface for maker space tool sign-offs implemented in python flask with Wi
  python3 -m venv venv
  source venv/bin/activate (or on windows source venv/Scripts/activate)
  pip3 install -r requirements.txt
- 
+
  ```
 ## Run
 ```python3 wautils.py```

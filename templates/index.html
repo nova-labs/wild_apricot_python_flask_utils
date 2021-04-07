@@ -4,17 +4,17 @@ utils module here to automatically render Flask's flashed messages in a
 bootstrap friendly manner #}
 {% import "bootstrap/utils.html" as utils %}
 {% block title %}home{% endblock %}
-{% block styles %}  
-  {{ super() }} 
+{% block styles %}
+  {{ super() }}
   {# Call in our scripts *after* bootstrap calls in jquery #}
   <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='fontawesome-all.min.css') }}" rel="stylesheet">
-{% endblock %} 
+{% endblock %}
 
-{# 
+{#
 Inside the ``content`` is where you should place most of your own stuff.
 This will keep scripts at the page end and a navbar you add on later
-intact. 
+intact.
 #}
 {% block content %}
 
@@ -38,10 +38,10 @@ intact.
 <meta id="is_account_admin" data-value={{g.is_wa_admin}}>
 
 {% if current_user.is_authenticated %}
-  {# 
+  {#
   Inside the ``content`` is where you should place most of your own stuff.
   This will keep scripts at the page end and a navbar you add on later
-  intact. 
+  intact.
   #}
   {% if g.is_wa_admin %}
   <div class='col-sm-2 p-1'>
@@ -73,10 +73,10 @@ intact.
 {%- endblock %}
 
 {# #}
-{% block scripts %}  
-{{ super() }} 
+{% block scripts %}
+{{ super() }}
 {# Call in our scripts *after* bootstrap calls in jquery #}
 <script type="text/javascript" src="{{ url_for('static', filename='wautils.js') + '?' + g.random_string}}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js.cookie.js') }}"></script>
-{% endblock %} 
+{% endblock %}
 

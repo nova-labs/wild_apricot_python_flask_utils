@@ -1,4 +1,4 @@
-/* 
+/*
  * wautils.js
  *
  * implements browser-side functionality for the novalabs wild apricot utilities
@@ -45,11 +45,11 @@ $(document).on('click','#signoff_edit_check_all_but', () => {
 })
 
 $(document).on('click','#signoff_edit_save_but', () => {
-  signoffs_save(); 
+  signoffs_save();
 })
 
 $(document).on('click','#member_edit_save_but', () => {
-  member_save(); 
+  member_save();
 })
 
 $(document).on('click','#signoff_edit_uncheck_all_but', () => {
@@ -76,7 +76,7 @@ $(document).on('click', '.contact_row_edit',function()  {
   // they've clicked the edit icon on one contact
   // go edit it
   hide_maindiv().then( ()=>{
-    contact_index = $(this).attr('id').replace('ci_',''); // retrieve contact index from div id= 
+    contact_index = $(this).attr('id').replace('ci_',''); // retrieve contact index from div id=
     contact_id  = gl_contacts[0].Contacts[contact_index]['Id']; // save just the wa contact Id
     gl_contact_index_list.push(contact_index)
     contact_to_edit = gl_contacts[0].Contacts[contact_index]; // retreive just this contact object
@@ -89,7 +89,7 @@ $(document).on('click', '.member_row_edit',function()  {
   // they've clicked the edit icon on one contact
   // go edit it
   hide_maindiv().then( ()=>{
-    contact_index = $(this).attr('id').replace('ci_',''); // retrieve contact index from div id= 
+    contact_index = $(this).attr('id').replace('ci_',''); // retrieve contact index from div id=
     contact_id  = gl_contacts[0].Contacts[contact_index]['Id']; // save just the wa contact Id
     gl_contact_index_list.push(contact_index)
     contact_to_edit = gl_contacts[0].Contacts[contact_index]; // retreive just this contact object
@@ -114,7 +114,7 @@ $(document).on('click', '.event_row_edit_btn',function()  {
     .then(hide_loader)
     .then(show_maindiv)
 
-  
+
 
     //.then(get_all_reg_info(event_info) )
 
@@ -131,16 +131,16 @@ $(document).on('click', '#show_events_btn',function()  {
     .then( ()=>{ console.log('1'); $('#maindiv').html('') } )
     .then(process_events_p)
     .then(show_maindiv)
-    
+
 })
 
 $('#maindiv').on('change','.pkm',function() {
   // on member select
-  // display the contact ID 
+  // display the contact ID
   id = $(this)[0].value // get id out of dom
-  $('#id').html(id) // set the display 
+  $('#id').html(id) // set the display
 
-  pkm =  get_prime_key_members() 
+  pkm =  get_prime_key_members()
   pkent = []
   pkent = get_prime_key_member_by_id(id)
   $('#email').html(pkent.email)
@@ -149,9 +149,9 @@ $('#maindiv').on('change','.pkm',function() {
 })
 
 $(document).on('click', '#auth_link',function()  {
-  // login 
+  // login
     window.location.href = '/authorize/wildapricot'
-}); 
+});
 
 $(document).on('click', '#nav_login_out',function()  {
 
@@ -161,7 +161,7 @@ $(document).on('click', '#nav_login_out',function()  {
     window.location.href = '/logout/wildapricot'
   } else {
     $('#nav_login_out').html("LOGOUT")
-    window.location.href = '/authorize/wildapricot' 
+    window.location.href = '/authorize/wildapricot'
   }
 })
 
@@ -181,7 +181,7 @@ $(document).on('click', '#nav_logout',function()  {
 */
 
 function extract_contentfield(j,fieldname) {
-  // called from the get 
+  // called from the get
   // consume output of /accounts/{accountId}/contactfields
 
   console.log("extract_contentfield()")
@@ -190,11 +190,11 @@ function extract_contentfield(j,fieldname) {
   var signoff_fields = []
 
   // save it away for later
-  gl_contact_fields = j; 
+  gl_contact_fields = j;
   $.each(j,(k,v) => {
     // find NL Signoffs and Categories then extract
     // all possible AllowedValues
-    if (v['FieldName'] !== fieldname) 
+    if (v['FieldName'] !== fieldname)
       return true
 
     $.each(v['AllowedValues'],(kk,vv) => {
@@ -220,7 +220,7 @@ function extract_contentfield(j,fieldname) {
           "Label": "[novapass] WWR_SawStop_Table Saw",
           "Id": 11968626
         }
-      ] 
+      ]
       */
       window.wautil_signoff_fields = signoff_fields
 
@@ -243,11 +243,11 @@ function process_contacts(j) {
 
   mode = document.getElementsByTagName("title")[0].innerHTML
 
-  
+
   if (j['error'] == 1) {
     m(j['error_message'],'warning')
   } else  {
-    $('#topdiv').empty() 
+    $('#topdiv').empty()
     //
     // render pick member page
     //
@@ -280,7 +280,7 @@ function process_contacts(j) {
 
       if (v['Email'] == '' ||
         v['FirstName'] == '' ||
-        v['LastName'] == '' ) 
+        v['LastName'] == '' )
         return true; // skip empties
 
       is_a_member = true; // https://www.youtube.com/watch?v=F7T7fOXxMEk
@@ -291,25 +291,25 @@ function process_contacts(j) {
       o += '<td>'
       if (mode == 'signoffs') {
       contact_index = 'ci_' + k
-      o += ` 
-        <button 
-           class="btn btn-sm contact_row_edit btn-primary" 
+      o += `
+        <button
+           class="btn btn-sm contact_row_edit btn-primary"
            id="${contact_index}"
-           data-toggle="tooltip" 
-           data-placement="right" 
-           title="edit signoffs"> 
+           data-toggle="tooltip"
+           data-placement="right"
+           title="edit signoffs">
         <i class="far fa-edit"></i> </button>
 `
       } else if (mode == 'members') {
 
       contact_index = 'ci_' + k
-      o += ` 
-        <button 
-           class="btn btn-sm member_row_edit btn-primary" 
+      o += `
+        <button
+           class="btn btn-sm member_row_edit btn-primary"
            id="${contact_index}"
-           data-toggle="tooltip" 
-           data-placement="right" 
-           title="edit member"> 
+           data-toggle="tooltip"
+           data-placement="right"
+           title="edit member">
         <i class="far fa-edit"></i> </button>
 `
       }
@@ -329,7 +329,7 @@ function process_contacts(j) {
       o += '</td>'
 
       //console.log(JSON.stringify(v,null,'\t'))
-    
+
       if (mode == 'signoffs') {
       o += '<td>'
 
@@ -345,12 +345,12 @@ function process_contacts(j) {
         sos.sort()
 
 
-        // 
-        // go fish for the right FieldValue 
-        // 
+        //
+        // go fish for the right FieldValue
+        //
         $.each(v['FieldValues'],(kk,vv) => {
-          // go fish for the right FieldValue 
-          if (vv['FieldName'] != 'NL Signoffs and Categories') 
+          // go fish for the right FieldValue
+          if (vv['FieldName'] != 'NL Signoffs and Categories')
             return true; // we are just looking for the NL Signoffs and Categories field
           // 45: {FieldName: "NL Signoffs and Categories", Value: Array(4), SystemCode: "custom-11058873"}
           //                 save this for when we POST our updated info                 ^^^^^^^^^^^^^^^
@@ -383,7 +383,7 @@ function process_contacts(j) {
 
         // if displaying for member editing we show member level
         $.each(v['FieldValues'],(kk,vv) => {
-          if (vv['FieldName'] != 'Membership level ID') 
+          if (vv['FieldName'] != 'Membership level ID')
             return
 
           o += '<td>'
@@ -392,7 +392,7 @@ function process_contacts(j) {
           $.each( gl_membershiplevels, (kkk,vvv) => {
             // so then we look it up in the wautils_membershiplevels
             if (level_id == vvv.Id) {
-              o += vvv.Name; 
+              o += vvv.Name;
             }
           })
           o += '</td>'
@@ -431,7 +431,7 @@ function m(mesg,color) {
   o += '</div>'
   if (mesg == '')
     $('#topdiv').html(o)
-  else 
+  else
     $('#topdiv').append(o)
 }
 
@@ -456,7 +456,7 @@ function get_registration_type(id) {
     }
   }
   return undefined
-  
+
 
 }
 
@@ -484,12 +484,12 @@ function fetch_registration_type(id) {
         url  : '/api/v1/wa_get_any_endpoint',
         // string '$accountid' will get replaced with real account id on server
         data : $.param({'endpoint':'accounts/$accountid/EventRegistrationTypes/' + id }),
-        success: (j) => { 
+        success: (j) => {
           console.log('fetch_registration_type(' + id + ') pushing')
           gl_reg_typeinfo.push(j[0])
           console.log(`fetch_registration_type(${id}) pushing.. gl_reg_typeinfo(${gl_reg_typeinfo.length})`)
           resolve()
-        }, 
+        },
         failure: (errMsg) => { alert("FAIL:" + errMsg); },
         error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
         contentType: false,
@@ -513,10 +513,10 @@ function get_membershiplevels() {
       url  : '/api/v1/wa_get_any_endpoint',
       // string '$accountid' will get replaced with real account id on server
       data : $.param({'endpoint':'accounts/$accountid/membershiplevels'}),
-      success: (j) => { 
+      success: (j) => {
         gl_membershiplevels = j; // save for later
         resolve()
-      }, 
+      },
       failure: (errMsg) => { alert("FAIL:" + errMsg); },
       error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
       contentType: false,
@@ -536,9 +536,9 @@ function get_signoffs() {
       url  : '/api/v1/wa_get_any_endpoint',
       // string '$accountid' will get replaced with real account id on server
       data : $.param({'endpoint':'/accounts/$accountid/contactfields'}),
-      success: (j) => { 
-        extract_contentfield(j,'NL Signoffs and Categories');resolve(); 
-      }, 
+      success: (j) => {
+        extract_contentfield(j,'NL Signoffs and Categories');resolve();
+      },
       failure: (errMsg) => { alert("FAIL:" + errMsg); },
       error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
       contentType: false,
@@ -567,7 +567,7 @@ function get_contacts() {
 
   // get eveyone members and contacts
   // get all members (no contacts)
-  // load time isn't much faster than getting everyone and its probably a bad idea to hard-code Ids 
+  // load time isn't much faster than getting everyone and its probably a bad idea to hard-code Ids
   fep  = $.param({
     '$async':'false',
     '$filter':"'Membership level ID' in [1206421,1206426,1207614,1208566,1214364,1214383,1214385,1214629]"
@@ -586,11 +586,11 @@ function get_contacts() {
         url  : u,
         // string '$accountid' will get replaced with real account id on server
         data : ep,
-        success: (j) => { 
+        success: (j) => {
           gl_contacts = j; // save for later
           process_contacts(gl_contacts)
-          resolve();  
-        }, 
+          resolve();
+        },
         failure: (errMsg) => { alert("FAIL:" + errMsg); },
         error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
         contentType: false,
@@ -638,7 +638,7 @@ function get_contacts_signed_off_items(contact_to_edit) {
   // return contact's signed-off items:
   existing_signoffs = []
   $.each(contact_to_edit['FieldValues'],(kk,vv) => {
-    if (vv['FieldName'] != 'NL Signoffs and Categories') 
+    if (vv['FieldName'] != 'NL Signoffs and Categories')
       return true
     existing_signoffs = vv
     return false
@@ -663,9 +663,9 @@ function get_contacts_signed_off_items(contact_to_edit) {
 }
 
 function has_signoff(contact_id,signoff_name) {
-  // does contact_id have signoff_name ? 
+  // does contact_id have signoff_name ?
   $.each(contact_to_edit['FieldValues'],(kk,vv) => {
-    if (vv['FieldName'] != 'NL Signoffs and Categories') 
+    if (vv['FieldName'] != 'NL Signoffs and Categories')
       return true
     exisiting_signoffs = vv
     return false
@@ -692,8 +692,8 @@ function has_signoff(contact_id,signoff_name) {
 }
 
 function signoff_edit_emit_signoffs(contact_to_edit) {
-  // List all possible sign-offs. 
-  // Check items which user has been checked off on 
+  // List all possible sign-offs.
+  // Check items which user has been checked off on
   var o = ''
   o += '<form class="form">'
   contacts_signed_off_items = get_contacts_signed_off_items(contact_to_edit)
@@ -701,7 +701,7 @@ function signoff_edit_emit_signoffs(contact_to_edit) {
     // iterate  through the list of all possible signoffs
     checked = ''
     if (contacts_signed_off_items.find(x => x.Id == v['Id']))
-      // if current contact's has signoffs, mark then checked 
+      // if current contact's has signoffs, mark then checked
       checked = 'checked'
 
     // emit html
@@ -738,8 +738,8 @@ function signoffs_edit_render(contact_to_edit) {
   o = ''
 
   // show name email of member
-  o += '<p class="bigger"><b>' + 
-    contact_to_edit['FirstName'] + ' ' 
+  o += '<p class="bigger"><b>' +
+    contact_to_edit['FirstName'] + ' '
     + contact_to_edit['LastName'] +
     ' (' + contact_to_edit['Email'] + ')' +
 
@@ -784,7 +784,7 @@ function signoffs_edit_render(contact_to_edit) {
   o += '<hr>'
 
   o += '<div>'
-  o += signoff_edit_emit_signoffs(contact_to_edit); 
+  o += signoff_edit_emit_signoffs(contact_to_edit);
 
   $('#maindiv').html(o)
 
@@ -835,7 +835,7 @@ function member_edit_render(ct) {
   $.each(ct['FieldValues'],(k,v) => {
     if (v.FieldName  == "Primary Member ID") {
       pkmid = v.Value
-    } 
+    }
   })
 
 
@@ -844,7 +844,7 @@ function member_edit_render(ct) {
     oo = ''
     oo = '<select class="pkm" id="pkm">'
     pkall = get_prime_key_members()
-    pkm =  get_prime_key_member_by_id(pkmid) 
+    pkm =  get_prime_key_member_by_id(pkmid)
 
     $.each(pkall,(k,v) => {
 
@@ -891,7 +891,7 @@ function get_prime_key_members() {
     'id':''})
   $.each(gl_contacts[0].Contacts,(k,v) => {
     if (('MembershipLevel' in v)) {
-      if ( v['MembershipLevel'].Name.includes('Key') && // prime key members are ones with the substring Key 
+      if ( v['MembershipLevel'].Name.includes('Key') && // prime key members are ones with the substring Key
         !v['MembershipLevel'].Name.includes('amily')) // but not the substr amily
         pkm.push({'name':v.DisplayName ,
           'email':v.Email,
@@ -907,7 +907,7 @@ function  get_prime_key_member_by_id(id) {
   $.each(get_prime_key_members(),(k,v) => {
     // lookup prime key member by id
     if (v.id == id)
-      pkent = v 
+      pkent = v
   })
   return pkent
 }
@@ -924,7 +924,7 @@ function get_system_code(contact, field_name) {
 
   system_code = ''
   $.each(contact['FieldValues'],(kk,vv) => {
-    // go fish for the right FieldValue 
+    // go fish for the right FieldValue
     if (vv['FieldName'] == field_name)  {
       system_code = vv['SystemCode']
     }
@@ -934,27 +934,27 @@ function get_system_code(contact, field_name) {
 
 function member_save() {
   if (gl_contact_index_list.length)
-    contact_index = gl_contact_index_list.pop(); 
+    contact_index = gl_contact_index_list.pop();
 
   this_contact = gl_contacts[0].Contacts[contact_index]
   this_contact_id = this_contact['Id']
 
-  wa_put_data = 
+  wa_put_data =
     {
       'Id' : this_contact_id ,
-      'FieldValues' : 
+      'FieldValues' :
       [
-        { 
+        {
           'FieldName' : 'Primary Member ID',
           'SystemCode' : get_system_code(this_contact,'Primary Member ID'),
           'Value' : $('#id').html()
         },
-        { 
+        {
           'FieldName' : 'Primary Member Name',
           'SystemCode' : get_system_code(this_contact,'Primary Member ID'),
           'Value' : $('#pkm option:selected').html()
         },
-        { 
+        {
           'FieldName' : 'Primary Member Email',
           'SystemCode' : get_system_code(this_contact,'Primary Member ID'),
           'Value' : $('#email').html()
@@ -964,18 +964,18 @@ function member_save() {
 
   flask_put_data = {
     'endpoint':'/accounts/$accountid/contacts/'  + this_contact_id,
-    'put_data':wa_put_data 
+    'put_data':wa_put_data
   }
 
   $.ajax({
     type: 'PUT',
     url  : '/api/v1/wa_put_any_endpoint',
     data :  JSON.stringify(flask_put_data),
-    beforeSend: () => { 
-      show_loader('Saving'); 
+    beforeSend: () => {
+      show_loader('Saving');
 
-    }, 
-    success: (j) => { 
+    },
+    success: (j) => {
       if (j['error'] == 1) {
         hide_loader()
         m(j['error_message'],'warning')
@@ -999,37 +999,37 @@ function Xsignoffs_save() {
   checked_divs = $('.signoff_item_div > input:checked').parent()
 
   if (gl_contact_index_list.length)
-    contact_index = gl_contact_index_list.pop(); 
+    contact_index = gl_contact_index_list.pop();
 
   this_contact = gl_contacts[0].Contacts[contact_index]
   this_contact_id = this_contact['Id']
   signoff_idx = gl_equipment_signoff_systemcode
-  this_signoffs = this_contact['FieldValues'][signoff_idx]; 
+  this_signoffs = this_contact['FieldValues'][signoff_idx];
 
   indiv_signoff_ids  = []
-  $('.signoff_item_div').find('input:checked').each(function() { 
+  $('.signoff_item_div').find('input:checked').each(function() {
     //
-    // <div id="cid_50537517" class="form-check signoff_item_div">  
-    // <input type="checkbox" class="form-check-input" id="fid_11968623" checked="checked">   
+    // <div id="cid_50537517" class="form-check signoff_item_div">
+    // <input type="checkbox" class="form-check-input" id="fid_11968623" checked="checked">
     //                   we store the field id in the DOM  ^^^^^^^^^^^^
     tid = this.id.replace('fid_','')
     //                  important:  vvvvvvvv
     indiv_signoff_ids.push( { 'Id': parseInt(tid), 'Label': $(this).next('label').text() })
   })
 
-  // indiv_signoff_ids  
+  // indiv_signoff_ids
   // "[{"Id":"11968550"},{"Id":"11968623"}]" ....
 
-  // compose what will become the json 
+  // compose what will become the json
   // we send up to WA...
-  wa_put_data = 
+  wa_put_data =
     {
       'Id' : this_contact_id ,
-      'FieldValues' : 
-      [{ 
+      'FieldValues' :
+      [{
         'FieldName' : 'EquipmentSignoffs',
         'SystemCode' : gl_equipment_signoff_systemcode,
-        'Value' : 
+        'Value' :
         indiv_signoff_ids
 
       }]
@@ -1038,17 +1038,17 @@ function Xsignoffs_save() {
   // all of wa_put_data will be sent to the flask server under 'put_data':
   flask_put_data = {
     'endpoint':'/accounts/$accountid/contacts/'  + this_contact_id,
-    'put_data':wa_put_data 
+    'put_data':wa_put_data
   }
 
   $.ajax({
     type: 'PUT',
     url  : '/api/v1/wa_put_any_endpoint',
     data :  JSON.stringify(flask_put_data),
-    beforeSend: () => { 
-      show_loader('Saving'); 
-    }, 
-    success: (j) => { 
+    beforeSend: () => {
+      show_loader('Saving');
+    },
+    success: (j) => {
       if (j != null && j['error'] == 1) {
         hide_loader()
         m(j['error_message'],'warning')
@@ -1058,13 +1058,13 @@ function Xsignoffs_save() {
       // update contact locally:
       $.each(gl_contacts[0].Contacts,function(k,v) {
         if (v['Id'] == this_contact_id) {
-          // find the contact we are working on.. 
+          // find the contact we are working on..
           $.each($(this)[0]['FieldValues'],function(kk,vv) {
             // then find 'EquipmentSignoffs' in their entry..
-            if (vv['FieldName'] != 'NL Signoffs and Categories') 
+            if (vv['FieldName'] != 'NL Signoffs and Categories')
               return true
             // and replace it with what we sent up to WA
-            $(this)[0]['Value'] = wa_put_data['FieldValues'][0]['Value'] 
+            $(this)[0]['Value'] = wa_put_data['FieldValues'][0]['Value']
           })
         }
       })
@@ -1083,7 +1083,7 @@ function signoffs_save() {
   checked_divs = $('.signoff_item_div > input:checked').parent()
 
   if (gl_contact_index_list.length)
-    contact_index = gl_contact_index_list.pop(); 
+    contact_index = gl_contact_index_list.pop();
 
   this_contact    = gl_contacts[0].Contacts[contact_index]
   this_contact_id = this_contact['Id']
@@ -1091,28 +1091,28 @@ function signoffs_save() {
   this_signoffs   = this_contact['FieldValues'][signoff_idx];
 
   indiv_signoff_ids  = []
-  $('.signoff_item_div').find('input:checked').each(function() { 
+  $('.signoff_item_div').find('input:checked').each(function() {
     //
-    // <div id="cid_50537517" class="form-check signoff_item_div">  
-    // <input type="checkbox" class="form-check-input" id="fid_11968623" checked="checked">   
+    // <div id="cid_50537517" class="form-check signoff_item_div">
+    // <input type="checkbox" class="form-check-input" id="fid_11968623" checked="checked">
     //                   we store the field id in the DOM  ^^^^^^^^^^^^
     tid = this.id.replace('fid_','')
     //                  important:  vvvvvvvv
     indiv_signoff_ids.push( { 'Id': parseInt(tid) })
   })
 
-  // indiv_signoff_ids  
+  // indiv_signoff_ids
   // "[{"Id":"11968550"},{"Id":"11968623"}]" ....
 
-  // compose what will become the json 
+  // compose what will become the json
   // we send up to WA...
-  wa_put_data = 
+  wa_put_data =
     {
       'Id' : this_contact_id ,
-      'FieldValues' : 
-      [{ 
+      'FieldValues' :
+      [{
         'SystemCode' : gl_equipment_signoff_systemcode,
-        'Value' : 
+        'Value' :
         indiv_signoff_ids
       }]
     }
@@ -1120,17 +1120,17 @@ function signoffs_save() {
   // all of wa_put_data will be sent to the flask server under 'put_data':
   flask_put_data = {
     'endpoint':'/accounts/$accountid/contacts/'  + this_contact_id,
-    'put_data':wa_put_data 
+    'put_data':wa_put_data
   }
 
   $.ajax({
     type: 'PUT',
     url  : '/api/v1/wa_put_any_endpoint',
     data :  JSON.stringify(flask_put_data),
-    beforeSend: () => { 
-      show_loader('Saving'); 
-    }, 
-    success: (j) => { 
+    beforeSend: () => {
+      show_loader('Saving');
+    },
+    success: (j) => {
 
       if (j != null && j['error'] == 1) {
         hide_loader()
@@ -1141,13 +1141,13 @@ function signoffs_save() {
       // update contact locally:
       $.each(gl_contacts[0].Contacts,function(k,v) {
         if (v['Id'] == this_contact_id) {
-          // find the contact we are working on.. 
+          // find the contact we are working on..
           $.each($(this)[0]['FieldValues'],function(kk,vv) {
             // then find 'EquipmentSignoffs' in their entry..
-            if (vv['FieldName'] != 'NL Signoffs and Categories') 
+            if (vv['FieldName'] != 'NL Signoffs and Categories')
               return true
             // and replace it with what we sent up to WA
-            $(this)[0]['Value'] = wa_put_data['FieldValues'][0]['Value'] 
+            $(this)[0]['Value'] = wa_put_data['FieldValues'][0]['Value']
           })
         }
       })
@@ -1178,11 +1178,11 @@ function get_events() {
         //data : $.param({'endpoint':'accounts/$accountid/events/?&$filter=IsUpcoming%20eq%20true&$sort=ByStartDate%20asc'}),
         //data : $.param( {'endpoint':'accounts/$accountid/events/?%24async=false&%24filter=IsUpcoming%20eq%20True&%24sort=ByStartDate%20asc'}),
         data : ep,
-        success: (j) => { 
+        success: (j) => {
           gl_events  = j; // save for later
           process_events(gl_events)
-          resolve();  
-        }, 
+          resolve();
+        },
         failure: (errMsg) => { alert("FAIL:" + errMsg); },
         error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
         contentType: false,
@@ -1204,12 +1204,12 @@ function fetch_contact_info(id) {
       url  : '/api/v1/wa_get_any_endpoint',
       // string '$accountid' will get replaced with real account id on server
       data : $.param({'endpoint':'accounts/$accountid/contacts/' + id }),
-      success: (j) => { 
+      success: (j) => {
         console.log('fetch_contact_info(' + id + ') pushing')
         gl_contacts.push(j[0])
         console.log(`fetch_registration_type(${id}) pushing.. gl_contacts(${gl_contacts.length})`)
         resolve()
-      }, 
+      },
       failure: (errMsg) => { alert("FAIL:" + errMsg); },
       error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
       contentType: false,
@@ -1225,7 +1225,7 @@ function get_all_contact_info() {
 
   return new Promise(function(resolve,reject) {
     reg_proms = []
-    for (let ev of gl_event_registrations) { 
+    for (let ev of gl_event_registrations) {
       reg_proms.push(fetch_contact_info(ev.Contact.Id))
     }
     // and don't resolve until they are all done
@@ -1237,11 +1237,11 @@ function get_all_contact_info() {
 function get_all_reg_info() {
 
   // need to make multiple eventregistrations api calls
-  
+
   return new Promise(function(resolve,reject) {
-    // fire them off 
+    // fire them off
     event_proms = []
-    for (let ev of gl_event_registrations) { 
+    for (let ev of gl_event_registrations) {
       event_proms.push(fetch_registration_type(ev.RegistrationTypeId))
     }
 
@@ -1270,11 +1270,11 @@ function get_event_registrations() {
         type: 'GET',
         url  : u,
         data : ep,
-        success: (j) => { 
+        success: (j) => {
           gl_event_registrations  = j; // save for later
           console.log('get_event_registrations() resolved')
-          resolve();  
-        }, 
+          resolve();
+        },
         failure: (errMsg) => { alert("FAIL:" + errMsg); },
         error: (xh,ts,et) =>  { alert("FAIL:" + u + ' ' + et); },
         contentType: false,
@@ -1295,7 +1295,7 @@ function emit_event_item(v) {
 }
 
 function get_registration_field(reg_fields,field_name) {
-  // get the value of 'field_name' out of reg_fields 
+  // get the value of 'field_name' out of reg_fields
   for (let rf of reg_fields) {
     if (rf.FieldName == field_name)
       return rf.Value
@@ -1336,11 +1336,11 @@ function process_event_registrations() {
       //o += JSON.stringify(event_info,null,'\t')
       //o += '</pre>'
       d=[]
-      for (let ev of event_info) { 
+      for (let ev of event_info) {
 
 
-        d.push({ 
-          DisplayName : get_registration_field(ev.RegistrationFields,'First name')  + ' ' + 
+        d.push({
+          DisplayName : get_registration_field(ev.RegistrationFields,'First name')  + ' ' +
                         get_registration_field(ev.RegistrationFields,'Last name'),
           MemberLevel : get_contact_membership(ev.Contact.Id),
           Email           : get_registration_field(ev.RegistrationFields,'Email'),
@@ -1348,7 +1348,7 @@ function process_event_registrations() {
           IsPaid          : ev.IsPaid,
           RegType         : get_registration_type_field(ev.RegistrationTypeId,'Name'),
           RegistrationFee : ev.RegistrationFee,
-          OnWaitlist      : ev.OnWaitlist 
+          OnWaitlist      : ev.OnWaitlist
         })
       }
 
@@ -1402,14 +1402,14 @@ function process_event_registrations() {
               title    : 'RegFee',
               field    : 'RegistrationFee',
               sortable : true,
-            }, 
+            },
             {
               title: 'OnWaitlist',
               field: 'OnWaitlist',
             sortable: true,
             }
             ],
-          data : d 
+          data : d
         })
 
         $('#events_table').bootstrapTable('hideColumn','Memo')
@@ -1430,7 +1430,7 @@ function process_events_p() {
   return new Promise( (resolve,reject)=> {
     process_events(gl_events)
     resolve()
-  }) 
+  })
 
 }
 
@@ -1447,7 +1447,7 @@ function process_events(j) {
 
     $('#maindiv').html(o)
 
-    d  = []; 
+    d  = [];
     $.each(j[0]['Events'],(k,v) => {
       disab = ''
       if (v.AccessLevel != 'Public')
@@ -1483,54 +1483,54 @@ function process_events(j) {
         columns: [
           {
             field: 'Button',
-          }, 
+          },
           {
             title: 'Id',
             field: 'Id',
             sortable: true,
-          }, 
+          },
           {
             title: 'Name',
             field: 'Name',
             sortable: true,
-          }, 
+          },
           {
             title: 'Visibility',
             field: 'AccessLevel',
-          }, 
-          { 
+          },
+          {
             title: 'Regi-<br> strations',
             field: 'ConfirmedRegistrationsCount',
             width: '100px',
             sortable: true,
 
-          }, 
-          { 
+          },
+          {
             title: 'Reg-<br> Limit',
             field: 'RegistrationsLimit',
             width: '100px',
             sortable: true,
 
-          }, 
+          },
           {
             title: 'Start Date',
             field: 'StartDate',
             sortable: true,
-          }, 
-          { 
+          },
+          {
             title: 'Location',
             field: 'Location',
             sortable: true,
 
-          }, 
+          },
           {
 
             title: 'Tags',
             field: 'Tags',
             sortable: true,
-          }, 
+          },
         ],
-        data : d 
+        data : d
 
       })
 
@@ -1571,7 +1571,7 @@ if (document.getElementsByTagName("title")[0].innerHTML == 'signoffs') {
     .then(hide_loader)
     .then(show_maindiv)
   return 0
-} 
+}
 
 // implement events
 if (document.getElementsByTagName("title")[0].innerHTML == 'events') {
@@ -1584,8 +1584,8 @@ if (document.getElementsByTagName("title")[0].innerHTML == 'events') {
     .then(show_maindiv)
     .then($ => { })
   return 0
-} 
-// implement members 
+}
+// implement members
 if (document.getElementsByTagName("title")[0].innerHTML == 'members') {
   $('#loadermessage').html('Fetching Membership Info..')
   hide_maindiv()
@@ -1596,7 +1596,7 @@ if (document.getElementsByTagName("title")[0].innerHTML == 'members') {
     .then(show_maindiv)
 
   return 0
-} 
+}
 
 })
 

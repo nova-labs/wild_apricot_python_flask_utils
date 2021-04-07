@@ -57,7 +57,7 @@ class WaApiClient(object):
         response = urllib.request.urlopen(request)
         self._token = WaApiClient._parse_response(response)
         self._token.retrieved_at = datetime.datetime.now()
-    
+
     def authenticate_with_authorization_code(self, access_code, request_uri, scope=None):
         """perform authentication by api key and store result for execute_request method
 
@@ -142,15 +142,15 @@ class WaApiClient(object):
         request.add_header("Accept", "application/json")
         request.add_header("Authorization", "Bearer " + self._get_access_token())
 
-        pprint('execute_request_raw() request ----------------') 
+        pprint('execute_request_raw() request ----------------')
         pprint(request.__dict__)
 
         if (data is not None):
-            pprint('execute_request_raw() data -----------------') 
+            pprint('execute_request_raw() data -----------------')
             pprint(json.dumps(data))
             pprint((data))
 
-        pprint('-----------------') 
+        pprint('-----------------')
 
 
         try:
@@ -192,10 +192,10 @@ class WaApiClient(object):
         request.add_header("Authorization", "Bearer " + self._get_access_token())
 
 
-        pprint('execute_request() request ----------------') 
+        pprint('execute_request() request ----------------')
         pprint(request.__dict__)
 
-        pprint('-----------------') 
+        pprint('-----------------')
 
         try:
             response = urllib.request.urlopen(request)
