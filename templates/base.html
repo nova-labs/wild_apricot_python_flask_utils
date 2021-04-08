@@ -1,0 +1,30 @@
+{% extends "bootstrap/base.html" %}
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+utils module here to automatically render Flask's flashed messages in a
+bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}events{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  {# Call in our scripts *after* bootstrap calls in jquery #}
+  <link href="{{ url_for('static', filename='bootstrap-table.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+This will keep scripts at the page end and a navbar you add on later
+intact. #}
+{% block content %}
+<h1> Add a content block </h1>
+{%- endblock %}
+
+{# #}
+{% block scripts %}
+  {{ super() }}
+  {# Call in our scripts *after* bootstrap calls in jquery #}
+  <script type="text/javascript" src="{{ url_for('static', filename='wautils.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap-table.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js.cookie.js') }}"></script>
+{% endblock %}

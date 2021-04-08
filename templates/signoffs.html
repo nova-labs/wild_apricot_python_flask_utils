@@ -1,55 +1,20 @@
-{% extends "bootstrap/base.html" %}
-{# Loads some of the macros included with Flask-Bootstrap. We are using the
-utils module here to automatically render Flask's flashed messages in a
-bootstrap friendly manner #}
-{% import "bootstrap/utils.html" as utils %}
+{% extends "base.html" %}
 {% block title %}signoffs{% endblock %}
-{% block styles %}  
-  {{ super() }} 
-  {# Call in our scripts *after* bootstrap calls in jquery #}
-  <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
-{% endblock %} 
 
-{# Inside the ``content`` is where you should place most of your own stuff.
-This will keep scripts at the page end and a navbar you add on later
-intact. #}
 {% block content %}
 <div class="container">
-  {% include "wanavbar.html"  %}
+  {% include "includes/wanavbar.html"  %}
+  {% include "includes/flash.html"  %}
 
-  {%- with messages = get_flashed_messages(with_categories=True) %}
-  {%- if messages %}
-  <div class="row">
-    <div class="col-md-12 pt-1">
-      {{utils.flashed_messages(messages)}}
-    </div>
-  </div>
-  {%- endif %}
-  {%- endwith %}
+  <div id="topdiv"><!-- Dynamically loaded by the js --></div>
 
-  <div id="topdiv"></div>
-
-  {% include "waloader.html" %}
+  {% include "includes/waloader.html" %}
 
   {% if g.is_wa_admin %}
-
-  <div id="maindiv">
-  <!-- Dynamically loaded by the js -->
-  </div>
+    <div id="maindiv"><!-- Dynamically loaded by the js --></div>
   {% else %}
-  <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
+    <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
   {% endif %}
-
-
-
-
 </div>
 {%- endblock %}
 
-{# #}
-{% block scripts %}  
-  {{ super() }} 
-  {# Call in our scripts *after* bootstrap calls in jquery #}
-  <script type="text/javascript" src="{{ url_for('static', filename='wautils.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js.cookie.js') }}"></script>
-{% endblock %} 
