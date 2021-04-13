@@ -18,3 +18,9 @@
 </div>
 {%- endblock %}
 
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='signoffs-page.js') }}"></script>
+{% endblock %}
+

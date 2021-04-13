@@ -12,10 +12,6 @@
 
   <div id="maindiv"><!-- Dynamically loaded by the js --></div>
 
-<!-- pass some things things to js -->
-<meta id="is_authenticated" data-value={{current_user.is_authenticated}} >
-<meta id="is_account_admin" data-value={{g.is_wa_admin}}>
-
 {% if current_user.is_authenticated %}
   {#
   Inside the ``content`` is where you should place most of your own stuff.

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}events{% endblock %}
+{% block title %}members{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -17,3 +17,8 @@
   {% endif %}
 </div>
 {%- endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='members-page.js') }}"></script>
+{% endblock %}
