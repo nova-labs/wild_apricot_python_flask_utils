@@ -1,0 +1,4 @@
+source venv/bin/activate
+export FLASK_APP="wautils.py"
+export FLASK_ENV=development
+./venv/bin/flask run -p 7000
