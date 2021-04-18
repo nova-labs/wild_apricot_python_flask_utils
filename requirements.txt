@@ -23,7 +23,7 @@ Flask-SQLAlchemy==2.5.1
 Flask-User==1.0.2.2
 Flask-WTF==0.14.3
 greenlet==1.0.0
-idna==3.1
+idna
 itsdangerous==1.1.0
 Jinja2==2.11.3
 Mako==1.1.4
