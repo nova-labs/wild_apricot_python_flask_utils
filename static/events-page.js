@@ -373,6 +373,20 @@ $(document).ready(() => {
       .then(show_maindiv);
   });
 
+  $(document)
+    .on('click', '#event_filter_past', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('filter', 'IsUpcoming eq False');
+      window.location.search = urlParams;
+    });
+
+  $(document)
+    .on('click', '#event_filter_upcoming', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.delete('filter');
+      window.location.search = urlParams;
+    });
+
   // initialize global storage
   gl_events = [];
   gl_event_registrations = [];
