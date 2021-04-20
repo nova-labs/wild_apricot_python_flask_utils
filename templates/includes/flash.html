@@ -1,9 +1,0 @@
-{%- with messages = get_flashed_messages(with_categories=True) %}
-  {%- if messages %}
-  <div class="row">
-    <div class="col-md-12 pt-1">
-      {{utils.flashed_messages(messages)}}
-    </div>
-  </div>
-  {%- endif %}
-{%- endwith %}
