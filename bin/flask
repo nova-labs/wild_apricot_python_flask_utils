@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Change to the root of the project
+cd "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd ))"
+
+source ./venv/bin/activate
+export FLASK_APP="wautils.py"
+export FLASK_ENV=development
+
+./venv/bin/flask $@

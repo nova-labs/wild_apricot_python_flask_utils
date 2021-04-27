@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# Change to the root of the project
+cd "$(dirname $( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd ))"
+
+python3 -m venv venv
+source ./venv/bin/activate
+./venv/bin/pip3 install -r requirements.txt
+./bin/flask db upgrade
