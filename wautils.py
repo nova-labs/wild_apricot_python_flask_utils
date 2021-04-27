@@ -2,10 +2,10 @@
 
 """
 
-wautils 
+wautils
 
-    A set of web-based tools for Wild Apricot Integration  
-    
+    A set of web-based tools for Wild Apricot Integration
+
     o Accepts your Wild Apricot Credentials via Wild Apricot OAuth
     o Determines if you are have Wild Apricot admin credentials
     o Give you further access only if you have admin credentials
@@ -52,8 +52,8 @@ import pprint # for debugging
 ex_code_fail    = 1 # used with sys.exit()
 ex_code_success = 0
 
-# get keys and config info from .env 
-load_dotenv() 
+# get keys and config info from .env
+load_dotenv()
 
 wa_uri_prefix          = "https://api.wildapricot.org/v2.2/"
 wa_uri_prefix_accounts = wa_uri_prefix + "Accounts/"
@@ -62,7 +62,7 @@ wa_uri_prefix_accounts = wa_uri_prefix + "Accounts/"
 app = Flask(__name__)
 app.secret_key = os.environ['FLASK_SECRET_KEY']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite' 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 
 app.config['OAUTH_CREDENTIALS'] = {
     'wildapricot' : {
@@ -74,7 +74,7 @@ app.config['OAUTH_CREDENTIALS'] = {
 }
 
 # rest api support
-restapi = FlaskRestAPI(app) 
+restapi = FlaskRestAPI(app)
 
 # bootstrap framework support
 Bootstrap(app)
@@ -115,6 +115,7 @@ class User(UserMixin, db.Model):
     last_name  = db.Column(db.String(64), nullable = False)
     email      = db.Column(db.String(64), nullable = True)
     token      = db.Column(db.String(64), nullable = True)
+    #wa_admin   = db.Column(db.Boolean, nullable = True)
 
 
 @lm.user_loader
@@ -126,7 +127,7 @@ def is_account_admin(waco):
   if waco['IsAccountAdministrator']:
     return True
   else:
-    return False 
+    return False
 
 
 def has_wautils_signoff(waco):
@@ -139,7 +140,7 @@ def has_wautils_signoff(waco):
   if len(sos):
     for so in sos['Value']:
       if so['Label'] == '[nlgroup] wautils':
-        return True 
+        return True
   return False
 
 @app.route('/')
@@ -201,7 +202,7 @@ def dump_events():
     events         = json.loads(resp.read().decode())
     ran_chars      = ''.join(random.choice(pos_ran_chars) for _ in range (10))
     event_file_name= '/tmp/events_' + ran_chars + '.csv'
-    event_file     = open(event_file_name,'w') 
+    event_file     = open(event_file_name,'w')
     event_file_csv = csv.writer(event_file)
 
     ar = []
@@ -303,7 +304,7 @@ def dump_events():
 def members():
     wapi,creds = wapi_init()
 
-    global g  
+    global g
     # things in g object can be accessed in jinja templates
     g.wa_accounts_contact_me = wapi.execute_request(
                 wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
@@ -332,21 +333,21 @@ def utils():
 @app.route('/logout/<provider>')
 @login_required
 def logout(provider):
-    
+
     if not current_user.is_anonymous:
         # if user is logged in..
         # first tell oauth who will give us a nonce token
-        payload = { 
+        payload = {
                 'token'       : current_user.token,
                 'email'       : current_user.email,
                 'redirectUrl' : request.environ['HTTP_REFERER']
         }
-        rq = requests.post(os.environ['WA_DEAUTHORIZE_URL'], json = payload) 
+        rq = requests.post(os.environ['WA_DEAUTHORIZE_URL'], json = payload)
 
         if rq.reason == 'OK':
             # then call WA's logout url with that nonce, and it'll really log them out
             logout_user()
-            url = os.environ['WA_LOGOUT_URL'] + '?nonce=' + rq.json()['nonce'] 
+            url = os.environ['WA_LOGOUT_URL'] + '?nonce=' + rq.json()['nonce']
             return redirect(url)
 
 
@@ -370,18 +371,18 @@ def oauth_authorize(provider):
 @app.route('/callback/<provider>')
 def oauth_callback(provider):
     # oauth calls us once we've been granted a token
-    
+
     if not current_user.is_anonymous:
         # not logged in
         return redirect(url_for('index'))
 
     oauth = OAuthSignIn.get_provider(provider)
-    
+
     me,oauth_session  = oauth.callback()
 
     if not('Email' in me):
         flash("ERROR oauth_callback(): " + me['Message'],'error')
-        return redirect(url_for('index')) 
+        return redirect(url_for('index'))
 
     sys.stderr.write("oauth_callback()\n")
 
@@ -394,11 +395,12 @@ def oauth_callback(provider):
                last_name  = me['LastName'],
                email      = me['Email'],
                id         = me['Id'],
+               #wa_admin   = me['IsAccountAdministrator'],
                token      = oauth_session.access_token
                )
        db.session.add(user)
        db.session.commit()
-    else: 
+    else:
        user.token = oauth_session.access_token
        db.session.commit()
 
@@ -411,8 +413,8 @@ def wa_get_contacts():
     # returns them formatted on screen
     # for testing only
     wapi,creds = wapi_init()
-    response =   wapi.execute_request_raw(wa_uri_prefix_accounts + 
-                 creds['account'] + 
+    response =   wapi.execute_request_raw(wa_uri_prefix_accounts +
+                 creds['account'] +
                  "/contacts/?$async=false")
 
     wa_accounts_contact_me = wapi.execute_request(
@@ -443,112 +445,74 @@ def wa_execute_request_raw(wapi,ep):
             result.append(decoded)
 
     return result
+
 ################################################################################
-# REST API STUFF
-###
-class WAGetAnyEndpointREST(FlaskRestResource):
+
+class WAAPIProxy(FlaskRestResource):
     """
-    REST API for our js in the browser to call us on
+    Proxy all API requests to WA
     """
-    def get(self):
-        return wa_get_any_endpoint_rest()
+    def get(self, path):
+        return wa_api_proxy("GET", path)
+    def post(self, path):
+        return wa_api_proxy("POST", path)
+    def put(self, path):
+        return wa_api_proxy("PUT", path)
 
-restapi.add_resource(WAGetAnyEndpointREST,'/api/v1/wa_get_any_endpoint')
+restapi.add_resource(WAAPIProxy,'/api/v1/wa_proxy/<path:path>')
 
+def wa_api_allowed_paths(path):
+  """
+  API Methods that non-admins are allowed to call
+  """
+  # Closes security holes like injecting someone else's account id
+  allowed = [
+      '^accounts/\{accountId\}$',
+      '^accounts/\{accountId\}/contacts/\d+$',
+      '^accounts/\{accountId\}/events$',
+      '^accounts/\{accountId\}/events/\d+$',
+      '^accounts/\{accountId\}/eventregistrations',
+      '^accounts/\{accountId\}/EventRegistrationTypes/\d+$'
+      ]
+  reg_list = map(re.compile, allowed)
+  return any(regex.match(path) for regex in reg_list)
 
-def wa_get_any_endpoint_rest():
-    """
-    respond passed endpoint up to WA, return response to requestor
-    """
-    pp.pprint('------wa_get_any_endpoint_rest()--------')
-    rp = FlaskRestReqparse.RequestParser()
+def wa_api_allowed_for_user(path):
+  if wa_api_allowed_paths(path):
+    return True
+  wapi,creds = wapi_init()
+  wac  = wapi.execute_request_raw(wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
+  waco = json.loads(wac.read().decode('utf-8'))
+  if is_account_admin(waco) or has_wautils_signoff(waco):
+    return True
+  return False
 
-    rp.add_argument('endpoint',type=str)
-    rp.add_argument('$asyncfalse',type=str)
-    args = rp.parse_args()
+def wa_api_munge_path(account_id):
+  path = request.full_path
+  path = path.replace('/api/v1/wa_proxy/', '')
+  path = path.replace('{accountId}', account_id)
+  path = wa_uri_prefix + path
+  return path
 
-    wapi,creds = wapi_init()
-    # browser js doesn't necessarily know our account ID. We add it here
-    ep = args['endpoint'].replace('$accountid', creds['account'])
-    wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
-    waco = json.loads(wac.read().decode('utf-8'))
+def wa_api_proxy(method, path_template):
+  wapi,creds = wapi_init()
+  account_id = creds['account']
+  path = wa_api_munge_path(account_id)
 
-    if is_account_admin(waco) or has_wautils_signoff(waco):
-        return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
-    else:
-        # non admins get to do only certain things
-        if re.match(r'^accounts/\d+/contacts/\d+$',urllib.parse.urlparse(ep).path) is not None:
-            return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
+  data = None
+  if method != "GET":
+    data = FlaskRestRequest.json
 
-        if re.match(r'^accounts/\d+/EventRegistrationTypes/\d+$',urllib.parse.urlparse(ep).path) is not None:
-            return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
+  if wa_api_allowed_for_user(path_template):
+    resp = wapi.execute_request_raw(path, data=data, method=method)
+    return json.loads(resp.read().decode())
+  else:
+    return {
+      "error":1,
+      "path": path,
+      "error_message":"You are not a WA account admin nor do you have the wautils signoff"
+    }
 
-        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/events/'): 
-            return wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
-
-        if (urllib.parse.urlparse(ep).path == 'accounts/' + creds['account'] + '/eventregistrations'): 
-            return  wa_execute_request_raw(wapi,wa_uri_prefix +  ep)
-
-        return {"error":1,"error_message":"permission denied"}
-
-###
-class WAPutAnyEndpointREST(FlaskRestResource):
-    """
-    REST API for our js in the browser to call us on
-    """
-    def put(self):
-        return wa_put_any_endpoint_rest()
-
-restapi.add_resource(WAPutAnyEndpointREST,'/api/v1/wa_put_any_endpoint')
-
-def wa_put_any_endpoint_rest():
-    """
-    send PUT endpoint rq up to WA, return response to requestor
-    """
-    rp = FlaskRestReqparse.RequestParser()
-
-    rq = FlaskRestRequest.json
-    ep = rq['endpoint']
-    pd  = rq['put_data']
-
-    wapi,creds = wapi_init()
-    ep = ep.replace('$accountid', creds['account'])
-
-
-    wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
-    waco = json.loads(wac.read().decode('utf-8'))
-
-    if is_account_admin(waco) or has_wautils_signoff(waco):
-
-        try:
-            response =   wapi.execute_request_raw(wa_uri_prefix +  ep, data=pd, method="PUT")
-
-        except urllib.error.HTTPError as e:
-            return {"error":1,"error_message": ep + ':' + str(e) }
-
-        except WaApi.ApiException as e:
-            return {"error":1,"error_message": ep + ':' + str(e) }
-
-
-        decoded = json.loads(response.read().decode())
-
-        result = []
-
-        if isinstance(decoded, list):
-            for item in decoded:
-                result.append(item)
-        elif isinstance(decoded, dict):
-                result.append(decoded)
-
-        return result
-    else:
-        return {"error":1,"error_message":"You are not a WA account admin nor do you have the wautils signoff"}
-
-
-
-## end rest stuff
-
-            
 ################################################################################
 # Execution starts here
 if __name__ == '__main__':
@@ -561,7 +525,7 @@ if __name__ == '__main__':
     sys.stderr.write(usage_mesg)
     sys.exit(ex_code_fail)
 
-    
+
   for o,a in ops:
 
     if (o == '--debug'):
