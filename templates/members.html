@@ -9,7 +9,7 @@
 
   {% include "includes/waloader.html" %}
 
-  {% if g.wa_accounts_contact_me.IsAccountAdministrator %}
+  {% if g.is_wa_admin %}
     <div id="maindiv"><!-- Dynamically loaded by the js --></div>
   {% else %}
     <h2>Sorry, You are not a Wild Apricot Account Admin</h2>

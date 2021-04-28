@@ -143,6 +143,16 @@ def has_wautils_signoff(waco):
         return True
   return False
 
+def setup_request_globals():
+    # retrieve users credentials
+    wapi,creds = wapi_init()
+    wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
+    waco = json.loads(wac.read().decode('utf-8'))
+
+    #g.wa_accounts_contact_me = wac
+    g.is_wa_admin = is_account_admin(waco)
+    g.has_wautils_signoff = has_wautils_signoff(waco)
+
 @app.before_request
 def before_request():
     print("before_request is running!")
@@ -156,18 +166,13 @@ def index():
     if current_user.is_anonymous:
         return render_template('unauthorized.html')
 
-    flash('Hi, ' +  current_user.first_name + ' !   ' + '(' + current_user.email + ')' ,'success')
-    # retrieve users credentials
-    wapi,creds = wapi_init()
-    wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
-    waco = json.loads(wac.read().decode('utf-8'))
+    setup_request_globals()
 
-    g.is_wa_admin = is_account_admin(waco)
+    flash('Hi, ' +  current_user.first_name + ' !   ' + '(' + current_user.email + ')' ,'success')
 
     if g.is_wa_admin:
       flash("Congrats ! You are a Wild Apricot Account Administrator",'success')
 
-    g.has_wautils_signoff = has_wautils_signoff(waco)
     if g.has_wautils_signoff:
       flash('You have the [nlgroups] wutils sign off which gives you special powers')
 
@@ -180,7 +185,9 @@ def signoffs():
     if current_user.is_anonymous:
         return render_template('unauthorized.html')
 
-    return set_credentials_then_render('signoffs.html')
+    setup_request_globals()
+
+    return render_template('signoffs.html')
 
 @app.route('/events')
 @login_required
@@ -188,12 +195,7 @@ def events():
     if current_user.is_anonymous:
         return render_template('unauthorized.html')
 
-    # retrieve users credentials
-    wapi,creds = wapi_init()
-    #
-    global g  # things in g object can be accessed in jinja templates
-    g.wa_accounts_contact_me = wapi.execute_request(
-            wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
+    setup_request_globals()
 
     return render_template('events.html')
 
@@ -303,34 +305,15 @@ def dump_events():
     return send_file('/tmp/swipes.csv',as_attachment=True,attachment_filename='swipes.csv')
 """
 
-
-
 @app.route('/members')
 @login_required
 def members():
     if current_user.is_anonymous:
         return render_template('unauthorized.html')
 
-    wapi,creds = wapi_init()
-
-    global g
-    # things in g object can be accessed in jinja templates
-    g.wa_accounts_contact_me = wapi.execute_request(
-                wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
+    setup_request_globals()
 
     return render_template('members.html')
-
-def set_credentials_then_render(template):
-    wapi,creds = wapi_init()
-    wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
-    waco = json.loads(wac.read().decode('utf-8'))
-
-    g.is_wa_admin = is_account_admin(waco)
-    if is_account_admin(waco):
-      return render_template(template)
-
-    g.is_wa_admin = has_wautils_signoff(waco)
-    return render_template(template)
 
 
 @app.route('/utils')
@@ -339,7 +322,9 @@ def utils():
     if current_user.is_anonymous:
         return render_template('unauthorized.html')
 
-    return set_credentials_then_render('utils.html')
+    setup_request_globals()
+
+    return render_template('utils.html')
 
 
 @app.route('/logout/<provider>')
