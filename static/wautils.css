@@ -53,3 +53,6 @@ p.bigger {
   100% { transform: rotate(360deg); }
 }
 
+main {
+  padding-top: 20px;
+}

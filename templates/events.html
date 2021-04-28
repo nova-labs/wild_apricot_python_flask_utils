@@ -2,8 +2,7 @@
 {% block title %}events{% endblock %}
 
 {% block content %}
-<div class="container">
-  {% include "includes/wanavbar.html"  %}
+<main role="main" class="container">
   {% include "includes/flash.html"  %}
 
   <div id="topdiv"><!-- Dynamically loaded by the js --></div>
@@ -11,7 +10,7 @@
   {% include "includes/waloader.html" %}
 
   <div id="maindiv"><!-- Dynamically loaded by the js --></div>
-</div>
+</main>
 {%- endblock %}
 
 {% block scripts %}

@@ -7,6 +7,7 @@ bootstrap friendly manner #}
 {% block title %}events{% endblock %}
 
 {% block styles %}
+  <link rel="icon" type="image/png" href="/static/novalabs_icon.png">
   {{ super() }}
   {# Call in our scripts *after* bootstrap calls in jquery #}
   <link href="{{ url_for('static', filename='bootstrap-table.min.css') }}" rel="stylesheet">
@@ -14,6 +15,10 @@ bootstrap friendly manner #}
   <!-- pass some things things to js -->
   <meta id="is_authenticated" data-value={{current_user.is_authenticated}} >
   <meta id="is_account_admin" data-value={{g.is_wa_admin}}>
+{% endblock %}
+
+{% block navbar %}
+  {% include "includes/navbar.html" %}
 {% endblock %}
 
 {# Inside the ``content`` is where you should place most of your own stuff.

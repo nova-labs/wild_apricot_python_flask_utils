@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  {% include "includes/wanavbar.html"  %}
+  <main role="main" class="container">
   {% include "includes/flash.html"  %}
 
   <div id="topdiv"><!-- Dynamically loaded by the js --></div>
@@ -42,4 +42,5 @@
   </div>
 {% endif %}
 </div>
+  </main>
 {%- endblock %}

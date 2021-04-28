@@ -2,8 +2,7 @@
 {% block title %}members{% endblock %}
 
 {% block content %}
-<div class="container">
-  {% include "includes/wanavbar.html"  %}
+<main role="main" class="container">
   {% include "includes/flash.html"  %}
 
   <div id="topdiv"><!-- Dynamically loaded by the js --></div>
@@ -15,7 +14,7 @@
   {% else %}
     <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
   {% endif %}
-</div>
+</main>
 {%- endblock %}
 
 {% block scripts %}

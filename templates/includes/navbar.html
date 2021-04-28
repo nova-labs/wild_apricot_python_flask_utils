@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark ">
+  <a class="navbar-brand" href="/">
+    <img src="/static/novalabs_icon_dark.png" style="height:30px" alt="">
+    Wild Apricot Automations
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ g.wa_url }}">Portal</a>
+      </li>
+      {% if g.is_wa_admin %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="/utils" id="admin_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin Utils</a>
+        <div class="dropdown-menu" aria-labelledby="admin_dropdown">
+          <a class="dropdown-item" href="/utils">Admin Utils</a>
+          <a class="dropdown-item" href="/signoffs">Signoffs</a>
+          <a class="dropdown-item" href="/members">Members</a>
+        </div>
+      </li>
+      {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="/events" id="events_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+        <div class="dropdown-menu" aria-labelledby="events_dropdown">
+          <a class="dropdown-item" href="/events">Upcoming Events</a>
+          <a class="dropdown-item" href="/events?filter=IsUpcoming+eq+False">Past Events</a>
+          <a class="dropdown-item" href="/dump_events">Export Events JSON</a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav justify-content-end ml-auto">
+      {% if current_user.is_authenticated %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="user_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ current_user.first_name }}</a>
+        <div class="dropdown-menu" aria-labelledby="user_dropdown">
+          <a class="dropdown-item" href="/logout/wildapricot">Log out</a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="/authorize/wildapricot">Sign in</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
