@@ -1,35 +1,27 @@
 {% extends "base.html" %}
+
 {% block title %}utils{% endblock %}
 
 {% block content %}
-<main class="container">
-  {% include "includes/flash.html"  %}
-
-  <div id="topdiv"><!-- Dynamically loaded by the js --></div>
-
-  {% include "includes/waloader.html" %}
-
-  {% if g.is_wa_admin %}
-  <div id="maindiv"><!-- Dynamically loaded by the js --></div>
-  <div class='col-sm-2 pt-1'>
-  <a href="/signoffs" class='btn btn-success' style="display:block;" >SIGNOFF TOOL</a>
-  </div>
-  <div class='col-sm-2 pt-1'>
-  </div>
-  <div class='col-sm-2 pt-1'>
-  <a href="/members" class='btn btn-success' style="display:block;" >MEMBERS TOOL</a>
-  </div>
-  <div class='col-sm-2 pt-1'>
-  </div>
-  {% else %}
-  <p>Sorry, You are not a Wild Apricot Account Admin</p>
-  {% endif %}
-
-  <div class='col-sm-2 pt-1'>
-    <a href="/" class='btn btn-primary' style="display:block;">GO BACK</a>
-  </div>
-
-
-</main>
-{%- endblock %}
+  <main class="container">
+    {% if g.is_wa_admin %}
+      <div id="maindiv"><!-- Dynamically loaded by the js --></div>
+      <div class='col-sm-2 pt-1'>
+        <a href="/signoffs" class='btn btn-success' style="display:block;" >SIGNOFF TOOL</a>
+      </div>
+      <div class='col-sm-2 pt-1'>
+      </div>
+      <div class='col-sm-2 pt-1'>
+        <a href="/members" class='btn btn-success' style="display:block;" >MEMBERS TOOL</a>
+      </div>
+      <div class='col-sm-2 pt-1'>
+      </div>
+    {% else %}
+      <p>Sorry, You are not a Wild Apricot Account Admin</p>
+    {% endif %}
+    <div class='col-sm-2 pt-1'>
+      <a href="/" class='btn btn-primary' style="display:block;">GO BACK</a>
+    </div>
+  </main>
+{% endblock %}
 

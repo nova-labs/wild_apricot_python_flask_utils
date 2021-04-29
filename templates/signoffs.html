@@ -1,21 +1,24 @@
 {% extends "base.html" %}
+
 {% block title %}signoffs{% endblock %}
 
+{% block body_attribs %} id="signoffs_page"{% endblock %}
+
 {% block content %}
-<main class="container">
-  {% include "includes/flash.html"  %}
+  <main class="container">
+    {% include "includes/flash.html"  %}
 
-  <div id="topdiv"><!-- Dynamically loaded by the js --></div>
+    <div id="topdiv"><!-- Dynamically loaded by the js --></div>
 
-  {% include "includes/waloader.html" %}
+    {% include "includes/waloader.html" %}
 
-  {% if g.is_wa_admin %}
-    <div id="maindiv"><!-- Dynamically loaded by the js --></div>
-  {% else %}
-    <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
-  {% endif %}
-</main>
-{%- endblock %}
+    {% if g.is_wa_admin %}
+      <div id="maindiv"><!-- Dynamically loaded by the js --></div>
+    {% else %}
+      <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
+    {% endif %}
+  </main>
+{% endblock %}
 
 
 {% block scripts %}

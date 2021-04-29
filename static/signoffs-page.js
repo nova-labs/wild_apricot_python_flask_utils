@@ -748,7 +748,7 @@ $(document).ready(() => {
 
 
   // implement signoffs
-  if (document.getElementsByTagName("title")[0].innerHTML == 'signoffs') {
+  if ($("body#signoffs_page")) {
     hide_maindiv()
       .then(show_loader)
       .then(get_signoffs)

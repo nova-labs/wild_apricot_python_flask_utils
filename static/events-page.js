@@ -396,10 +396,8 @@ $(document).ready(() => {
 
 
   // implement events
-  if (document.getElementsByTagName("title")[0].innerHTML == 'events') {
-
-    $('#loadermessage')
-      .html('Fetching Event Info..');
+  if ($("body#events_page")) {
+    $('#loadermessage').html('Fetching Event Info..');
 
     hide_maindiv()
       .then(show_loader)

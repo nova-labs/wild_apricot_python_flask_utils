@@ -448,8 +448,7 @@ $(document).ready(() => {
   gl_membershiplevels = [];
   gl_contact_index_list = [];
 
-  // implement members
-  if (document.getElementsByTagName("title")[0].innerHTML == 'members') {
+  if ($("body#members_page")) {
     $('#loadermessage')
       .html('Fetching Membership Info..');
     hide_maindiv()
