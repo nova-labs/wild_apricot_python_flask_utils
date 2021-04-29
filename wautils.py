@@ -152,13 +152,6 @@ def setup_request_globals():
     #g.wa_accounts_contact_me = wac
     g.is_wa_admin = is_account_admin(waco)
     g.has_wautils_signoff = has_wautils_signoff(waco)
-
-@app.before_request
-def before_request():
-    print("before_request is running!")
-    if current_user.is_anonymous:
-        return
-
     g.wa_url = os.getenv('WA_SITE_URL')
 
 @app.route('/')
