@@ -1,46 +1,81 @@
 {% extends "base.html" %}
-{% block title %}home{% endblock %}
 
 {% block content %}
 <div class="container">
   <main role="main" class="container">
-  {% include "includes/flash.html"  %}
+    {% include "includes/flash.html"  %}
 
-  <div id="topdiv"><!-- Dynamically loaded by the js --></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <div id="profile"></div>
+          {% raw %}
+          <script id="profile_mustache" type="text/template">
 
-  {% include "includes/waloader.html" %}
-
-  <div id="maindiv"><!-- Dynamically loaded by the js --></div>
-
-{% if current_user.is_authenticated %}
-  {#
-  Inside the ``content`` is where you should place most of your own stuff.
-  This will keep scripts at the page end and a navbar you add on later
-  intact.
-  #}
-  {% if g.is_wa_admin %}
-  <div class='col-sm-2 p-1'>
-    <a href="/utils" class='btn btn-primary'>GO TO ADMIN UTILS</a>
-  </div>
-  {% endif %}
-  <div class='col-sm-2 p-1'>
-    <a href="/events" class='btn btn-primary'>SHOW EVENTS</a>
-  </div>
-  <div class='col-sm-2 p-1'>
-    <a href="/dump_events" class='btn btn-primary'>DUMP EVENTS</a>
-  </div>
-
-
-  {% else %}
-  <div>
-    <div class="row">
-      <div class="col-sm-2">
-        <btn id="auth_link" class='btn btn-primary'>LOG IN</btn>
+            <div class="card">
+              <div class="card-header py-3 d-flex align-items-center">
+                  <img src="{{pic}}" class="rounded-circle align-self-start mr-3" style="max-height:60px;max-width:60px;">
+                  <div>
+                    <h5 class="card-title mb-0">
+                      {{greeting}} {{me.FirstName}}
+                    <h5>
+                    <h6 class="card-subtitle text-muted">{{me.Email}}</h6>
+                  </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text">
+                  Wild Apricot Automations is a lil web interface for maker
+                  space tool sign-offs and membership managements. Data is
+                  pulled from the Wild Apricot portal.
+                </p>
+              </div>
+              <ul class="list-group list-group-flush">
+                {{#is_admin}}
+                  <li class="list-group-item">
+                    🎉 You are an account admin, congrats!
+                  </li>
+                {{/is_admin}}
+                {{#is_signoffer}}
+                  <li class="list-group-item">
+                    💪 You have the super powers for signing people off.
+                  </li>
+                {{/is_signoffer}}
+              </ul>
+              <div class="card-body">
+                <a href="/events" class="card-link">View Events</a>
+              </div>
+            </div>
+          </script>
+          {% endraw %}
+        </div>
+        <div class="col-sm">
+          {% raw %}
+          <script id="signoffs_mustache" type="text/template">
+          <h3>Signoffs and Categories</h3>
+          <table class="table">
+            <tbody>
+              {{#signoffs}}
+              <tr>
+                <td scope="row">
+                  <span class="badge badge-secondary badge-{{category}}">{{category}}</span>
+                </td>
+                <td>{{name}}</td>
+              </tr>
+              {{/signoffs}}
+            </tbody>
+          </table>
+          </script>
+          {% endraw %}
+          <div id="signoffs"></div>
+        </div>
       </div>
-      <div class="col-sm-10"> <p>(Use your portal.nova-labs.org login/pw)</p>
     </div>
-  </div>
-{% endif %}
-</div>
   </main>
-{%- endblock %}
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='index-page.js') }}"></script>
+{% endblock %}

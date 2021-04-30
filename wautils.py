@@ -21,7 +21,7 @@ usage:
         Start up wautils web server
 
 """
-from flask import Flask, redirect, url_for, render_template, flash, g, request, send_file
+from flask import Flask, redirect, url_for, render_template, flash, g, request, send_file, abort
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
@@ -143,31 +143,26 @@ def has_wautils_signoff(waco):
         return True
   return False
 
-def setup_request_globals():
+def before_authenticated_request():
+    if current_user.is_anonymous:
+        abort(401)
     # retrieve users credentials
     wapi,creds = wapi_init()
     wac  = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/contacts/" + str(current_user.id))
     waco = json.loads(wac.read().decode('utf-8'))
 
-    #g.wa_accounts_contact_me = wac
+    g.wa_me = waco
     g.is_wa_admin = is_account_admin(waco)
-    g.has_wautils_signoff = has_wautils_signoff(waco)
+    g.is_wa_signoffer = has_wautils_signoff(waco)
     g.wa_url = os.getenv('WA_SITE_URL')
+
+@app.errorhandler(401)
+def unauthorized_handler(error):
+    return render_template('unauthorized.html'), 401
 
 @app.route('/')
 def index():
-    if current_user.is_anonymous:
-        return render_template('unauthorized.html')
-
-    setup_request_globals()
-
-    flash('Hi, ' +  current_user.first_name + ' !   ' + '(' + current_user.email + ')' ,'success')
-
-    if g.is_wa_admin:
-      flash("Congrats ! You are a Wild Apricot Account Administrator",'success')
-
-    if g.has_wautils_signoff:
-      flash('You have the [nlgroups] wutils sign off which gives you special powers')
+    before_authenticated_request()
 
     return render_template('index.html')
 
@@ -175,20 +170,14 @@ def index():
 @app.route('/signoffs')
 @login_required
 def signoffs():
-    if current_user.is_anonymous:
-        return render_template('unauthorized.html')
-
-    setup_request_globals()
+    before_authenticated_request()
 
     return render_template('signoffs.html')
 
 @app.route('/events')
 @login_required
 def events():
-    if current_user.is_anonymous:
-        return render_template('unauthorized.html')
-
-    setup_request_globals()
+    before_authenticated_request()
 
     return render_template('events.html')
 
@@ -196,7 +185,7 @@ def events():
 @login_required
 def dump_events():
     if current_user.is_anonymous:
-        return render_template('unauthorized.html')
+        abort(401)
 
     wapi,creds     = wapi_init()
     resp           = wapi.execute_request_raw( wa_uri_prefix_accounts + creds['account'] + "/events/")
@@ -301,10 +290,7 @@ def dump_events():
 @app.route('/members')
 @login_required
 def members():
-    if current_user.is_anonymous:
-        return render_template('unauthorized.html')
-
-    setup_request_globals()
+    before_authenticated_request()
 
     return render_template('members.html')
 
@@ -312,10 +298,7 @@ def members():
 @app.route('/utils')
 @login_required
 def utils():
-    if current_user.is_anonymous:
-        return render_template('unauthorized.html')
-
-    setup_request_globals()
+    before_authenticated_request()
 
     return render_template('utils.html')
 
@@ -502,6 +485,7 @@ def wa_api_proxy(method, path_template):
       "path": path,
       "error_message":"You are not a WA account admin nor do you have the wautils signoff"
     }
+
 
 ################################################################################
 # Execution starts here
