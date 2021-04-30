@@ -39,9 +39,9 @@ $(document).ready(() => {
 
     var profile_tpl = $("#profile_mustache").html();
     var profile_vars ={
-      me: wa_me,
+      me: window.wa_me,
       greeting: greeting(),
-      pic: get_gravatar("csexton@gmail.com", 200),
+      pic: get_gravatar(window.wa_me, 200),
       is_admin: window.wa_admin,
       is_signoffer: window.wa_signoffer
     }
