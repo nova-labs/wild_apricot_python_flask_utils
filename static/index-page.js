@@ -41,7 +41,7 @@ $(document).ready(() => {
     var profile_vars ={
       me: window.wa_me,
       greeting: greeting(),
-      pic: get_gravatar(window.wa_me, 200),
+      pic: get_gravatar(window.wa_me.Email, 200),
       is_admin: window.wa_admin,
       is_signoffer: window.wa_signoffer
     }
