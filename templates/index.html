@@ -1,82 +1,81 @@
-{% extends "bootstrap/base.html" %}
-{# Loads some of the macros included with Flask-Bootstrap. We are using the
-utils module here to automatically render Flask's flashed messages in a
-bootstrap friendly manner #}
-{% import "bootstrap/utils.html" as utils %}
-{% block title %}home{% endblock %}
-{% block styles %}  
-  {{ super() }} 
-  {# Call in our scripts *after* bootstrap calls in jquery #}
-  <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='fontawesome-all.min.css') }}" rel="stylesheet">
-{% endblock %} 
+{% extends "base.html" %}
 
-{# 
-Inside the ``content`` is where you should place most of your own stuff.
-This will keep scripts at the page end and a navbar you add on later
-intact. 
-#}
 {% block content %}
-
-
 <div class="container">
-  {% include "wanavbar.html"  %}
+  <main role="main" class="container">
+    {% include "includes/flash.html"  %}
 
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <div id="profile"></div>
+          {% raw %}
+          <script id="profile_mustache" type="text/template">
 
-  {%- with messages = get_flashed_messages(with_categories=True) %}
-  {%- if messages %}
-  <div class="row">
-    <div class="col-sm-12">
-    {{utils.flashed_messages(messages)}}
-    </div>
-  </div>
-  {%- endif %}
-  {%- endwith %}
-
-<!-- pass some things things to js -->
-<meta id="is_authenticated" data-value={{current_user.is_authenticated}} >
-<meta id="is_account_admin" data-value={{g.is_wa_admin}}>
-
-{% if current_user.is_authenticated %}
-  {# 
-  Inside the ``content`` is where you should place most of your own stuff.
-  This will keep scripts at the page end and a navbar you add on later
-  intact. 
-  #}
-  {% if g.is_wa_admin %}
-  <div class='col-sm-2 p-1'>
-    <a href="/utils" class='btn btn-primary'>GO TO ADMIN UTILS</a>
-  </div>
-  {% endif %}
-  <div class='col-sm-2 p-1'>
-    <a href="/events" class='btn btn-primary'>SHOW EVENTS</a>
-  </div>
-  <div class='col-sm-2 p-1'>
-    <a href="/dump_events" class='btn btn-primary'>DUMP EVENTS</a>
-  </div>
-
-
-  {% else %}
-  <div>
-    <div class="row">
-      <div class="col-sm-2">
-        <btn id="auth_link" class='btn btn-primary'>LOG IN</btn>
+            <div class="card">
+              <div class="card-header py-3 d-flex align-items-center">
+                  <img src="{{pic}}" class="rounded-circle align-self-start mr-3" style="max-height:60px;max-width:60px;">
+                  <div>
+                    <h5 class="card-title mb-0">
+                      {{greeting}} {{me.FirstName}}
+                    <h5>
+                    <h6 class="card-subtitle text-muted">{{me.Email}}</h6>
+                  </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text">
+                  Wild Apricot Automations is a lil web interface for maker
+                  space tool sign-offs and membership managements. Data is
+                  pulled from the Wild Apricot portal.
+                </p>
+              </div>
+              <ul class="list-group list-group-flush">
+                {{#is_admin}}
+                  <li class="list-group-item">
+                    🎉 You are an account admin, congrats!
+                  </li>
+                {{/is_admin}}
+                {{#is_signoffer}}
+                  <li class="list-group-item">
+                    💪 You have the super powers for signing people off.
+                  </li>
+                {{/is_signoffer}}
+              </ul>
+              <div class="card-body">
+                <a href="/events" class="card-link">View Events</a>
+              </div>
+            </div>
+          </script>
+          {% endraw %}
+        </div>
+        <div class="col-sm">
+          {% raw %}
+          <script id="signoffs_mustache" type="text/template">
+          <h3>Signoffs and Categories</h3>
+          <table class="table">
+            <tbody>
+              {{#signoffs}}
+              <tr>
+                <td scope="row">
+                  <span class="badge badge-secondary badge-{{category}}">{{category}}</span>
+                </td>
+                <td>{{name}}</td>
+              </tr>
+              {{/signoffs}}
+            </tbody>
+          </table>
+          </script>
+          {% endraw %}
+          <div id="signoffs"></div>
+        </div>
       </div>
-      <div class="col-sm-10"> <p>(Use your portal.nova-labs.org login/pw)</p>
     </div>
-  </div>
-{% endif %}
-
-
-
+  </main>
 </div>
-{%- endblock %}
 
-{# #}
-{% block scripts %}  
-{{ super() }} 
-{# Call in our scripts *after* bootstrap calls in jquery #}
-<script type="text/javascript" src="{{ url_for('static', filename='wautils.js') + '?' + g.random_string}}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js.cookie.js') }}"></script>
-{% endblock %} 
+{% endblock %}
 
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='index-page.js') }}"></script>
+{% endblock %}

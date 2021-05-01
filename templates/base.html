@@ -1,0 +1,41 @@
+{% extends "bootstrap/base.html" %}
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+utils module here to automatically render Flask's flashed messages in a
+bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}NovaLabs - Wild Apricot Automations{% endblock %}
+
+{% block metas %}
+  {{ super() }}
+  <meta id="is_authenticated" data-value={{current_user.is_authenticated}} >
+  <meta id="is_account_admin" data-value={{g.is_wa_admin}}>
+
+  <script type="application/javascript">
+    {% if g.wa_me %}
+    window.wa_me={{ g.wa_me | tojson }};
+    window.wa_admin={{ g.is_wa_admin | tojson }};
+    window.wa_signoffer={{ g.is_wa_signoffer | tojson }};
+    {% endif %}
+  </script>
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+  <link rel="icon" type="image/png" href="/static/novalabs_icon.png">
+  <link href="{{ url_for('static', filename='bootstrap-table.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='wautils.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block navbar %}
+  {% include "includes/navbar.html" %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  <script type="text/javascript" src="{{ url_for('static', filename='bootstrap-table.min.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js.cookie.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='mustache.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='waapi.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='base.js') }}"></script>
+{% endblock %}

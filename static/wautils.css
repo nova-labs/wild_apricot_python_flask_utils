@@ -53,3 +53,18 @@ p.bigger {
   100% { transform: rotate(360deg); }
 }
 
+main {
+  padding-top: 20px;
+}
+
+.badge-equipment {
+  background-color: #7952b3;
+}
+
+.badge-novapass {
+  background-color:  #ffc107;
+}
+
+.badge-nlgroup {
+  background-color:  #28a745;
+}
