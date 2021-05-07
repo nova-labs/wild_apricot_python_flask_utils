@@ -121,6 +121,7 @@ $(document).ready(() => {
         o = '';
         o += '<h3>Event Registrations</h3>';
         o += `<h2>${event_info[0].Event.Name}</h2>`;
+        o += `<p>Event ID: <code>${gl_event_id}</code></p>`;
         o += '<button class="btn btn-info    btn-inline btn-sm m-1" id="show_events_btn">BACK</button>';
         o += '<table id="events_table" class="table table-striped"></table>';
         $('#maindiv').html(o);
