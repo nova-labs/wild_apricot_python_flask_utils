@@ -68,3 +68,10 @@ main {
 .badge-nlgroup {
   background-color:  #28a745;
 }
+
+@media print {
+  .fixed-table-toolbar
+  {
+    display: none !important;
+  }
+}
