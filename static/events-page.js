@@ -122,7 +122,7 @@ $(document).ready(() => {
         o += '<h3>Event Registrations</h3>';
         o += `<h2>${event_info[0].Event.Name}</h2>`;
         o += `<p>Event ID: <code>${gl_event_id}</code></p>`;
-        o += '<button class="btn btn-info    btn-inline btn-sm m-1" id="show_events_btn">BACK</button>';
+        o += '<button class="btn btn-info btn-inline btn-sm m-1 d-print-none" id="show_events_btn">BACK</button>';
         o += '<table id="events_table" class="table table-striped"></table>';
         $('#maindiv').html(o);
 
@@ -248,7 +248,7 @@ $(document).ready(() => {
     o = '';
     o += '<h3>';
     o += '<span>Events</span>';
-    o += '<div class="float-right btn-group" role="group">';
+    o += '<div class="float-right btn-group d-print-none" role="group">';
     o += '  <button type="button" class="btn btn-light" id="event_filter_past">Past Events</button>';
     o += '  <button type="button" class="btn btn-light" id="event_filter_upcoming">Upcoming Events</button>';
     o += '</div>';
