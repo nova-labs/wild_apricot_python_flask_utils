@@ -43,11 +43,11 @@ var WAAPI = (function (self) {
       .then(json => {
         console.log("WAAPI:", json);
         if (success) {
-          success(json);
+          return success(json);
         }
       })
     .catch((error) => {
-      console.error("WAAPI Error:", error);
+      return console.error("WAAPI Error:", error);
     });
   }
 
