@@ -21,7 +21,7 @@ usage:
         Start up wautils web server
 
 """
-from flask import Flask, redirect, url_for, render_template, flash, g, request, send_file, abort
+from flask import Flask, redirect, url_for, render_template, flash, g, request, send_file, abort, send_from_directory
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
@@ -166,13 +166,19 @@ def index():
 
     return render_template('index.html')
 
-
 @app.route('/signoffs')
 @login_required
 def signoffs():
     before_authenticated_request()
 
     return render_template('signoffs.html')
+
+@app.route('/tool_signoffs')
+@login_required
+def tool_signoffs():
+    before_authenticated_request()
+
+    return render_template('tool_signoffs.html')
 
 @app.route('/events')
 @login_required

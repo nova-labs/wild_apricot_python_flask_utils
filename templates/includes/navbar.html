@@ -13,18 +13,22 @@
       <li class="nav-item">
         <a class="nav-link" href="{{ g.wa_url }}">Portal</a>
       </li>
-      {% if g.is_wa_signoffer %}
-      <li class="nav-item">
-        <a class="nav-link" href="/signoffs">Signoffs</a>
-      </li>
-      {% endif %}
       {% if g.is_wa_admin %}
       <li class="nav-item">
         <a class="nav-link" href="/members">Members</a>
       </li>
       {% endif %}
+      {% if g.is_wa_signoffer %}
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="/events" id="events_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+        <a class="nav-link dropdown-toggle" href="#" id="signoffs_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Signoffs</a>
+        <div class="dropdown-menu" aria-labelledby="signoffs_dropdown">
+            <a class="dropdown-item" href="/signoffs">Signoffs by Member</a>
+            <a class="dropdown-item" href="/tool_signoffs">Signoffs by Tool</a>
+        </div>
+      </li>
+      {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="events_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
         <div class="dropdown-menu" aria-labelledby="events_dropdown">
           <a class="dropdown-item" href="/events">Upcoming Events</a>
           <a class="dropdown-item" href="/events?filter=IsUpcoming+eq+False">Past Events</a>
