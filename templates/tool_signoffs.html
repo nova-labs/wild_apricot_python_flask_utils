@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Tool Signoffs{% endblock %}
+
+{% block body_attribs %} id="tool_signoffs_page"{% endblock %}
+
+{% block navbar %}
+  {% include "includes/navbar.html" %}
+{% endblock %}
+
+{% block content %}
+  <main class="container">
+    {% include "includes/flash.html"  %}
+    {% if g.is_wa_signoffer %}
+
+      <div class="row">
+        <div class="col-lg-12 mx-auto">
+          <h3>Batch Update Signoffs</h3>
+          <p>
+            This form allows you to grant a signoff to multiple members in one fell swoop.
+          </p>
+
+          <div id="alerts" class=""></div>
+          {% raw %}
+          <script id="success_alert_mustache" type="text/template">
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+              <p>
+                Updated the following members:
+                <ul>
+                  {{#members}}
+                  <li> {{FirstName}} {{LastName}} </li>
+                  {{/members}}
+                </ul>
+              </p>
+
+              <p class="mb-0"> Thanks for playing! </p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </script>
+          {% endraw %}
+
+
+          {% include "includes/waloader.html"  %}
+          <div style="display:none;" id="maindiv">
+            <form id="form">
+              <!-- Prevent implicit submission of the form -->
+              <button type="submit" disabled style="display: none" aria-hidden="true"></button>
+              <input id="signoff_field_system_code" name="SystemCode" type="hidden"></input>
+
+              <div class="form-group">
+                <label for="signoff_id">Signoff</label>
+                {% raw %}
+                <script id="signoff_list_options_mustache" type="text/template">
+                  {{#signoffs}}
+                  <option value="{{id}}">{{label}}</option>
+                  {{/signoffs}}
+                </script>
+                {% endraw %}
+                <select required name="signoff_id" class="form-control" id="signoff_list">
+                  <option value="" disabled selected>Select a Sign Off</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                {% raw %}
+                <script id="tool_list_mustache" type="text/template">
+                  <h3>Signoffs and Categories</h3>
+                  <table class="table">
+                    <tbody>
+                      {{#signoffs}}
+                      <tr>
+                        <td scope="row">
+                          <span class="badge badge-secondary badge-{{category}}">{{category}}</span>
+                        </td>
+                        <td>{{name}}</td>
+                      </tr>
+                      {{/signoffs}}
+                    </tbody>
+                  </table>
+                </script>
+                {% endraw %}
+                <div id="tool_signoff_list"></div>
+              </div>
+
+              <div class="form-group">
+                <label for="contact">Members</label>
+                {% raw %}
+                <script id="contact_fields_mustache" type="text/template">
+                  <li class="list-group-item contact-fields">
+                    <input class="form-control" name="contact[]" type="hidden" value="{{Id}}"></input>
+                    {{FirstName}} {{LastName}} &lt;{{Email}}&gt;
+                    <span class="float-right">
+                      <a href="#" class="remove-contact text-danger ">remove</a>
+                    </span>
+                  </li>
+                </script>
+                {% endraw %}
+                <ul id="contact_field_list" class="list-group clearfix"></ul>
+              </div>
+
+
+              <div class="form-group">
+                <input required id="contact_search" name="contact_search" class="form-control" placeholder="Search for member to add" type="text"></input>
+                <small class="form-text text-muted">
+                  Enter three or more characters from the member's name or email address.
+                </small>
+                {% raw %}
+                <script id="contact_search_list_mustache" type="text/template">
+                  {{#contacts}}
+                  <li value="{{Id}}" class="contact-to-add list-group-item">
+                    {{FirstName}} {{LastName}} &lt;{{Email}}&gt;
+                  </li>
+                  {{/contacts}}
+                </script>
+                {% endraw %}
+                <ul id="contact_search_list" class="list-group floating-list"></ul>
+
+              </div>
+
+              <div class="form-group">
+                <datalist id="contacts_list">
+                  <option value="Internet Explorer">
+                  <option value="Firefox">
+                  <option value="Chrome">
+                  <option value="Opera">
+                  <option value="Safari">
+                </datalist>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <h2>Sorry, You are not a Wild Apricot Account Admin</h2>
+    {% endif %}
+  </main>
+{% endblock %}
+
+
+{% block scripts %}
+  {{ super() }}
+
+  <!--script type="application/json" src="https://unpkg.com/vue@2.6.12/dist/vue.js"></script-->
+  <script type="application/json" src="https://unpkg.com/ractive"></script>
+
+  <script type="text/javascript" src="{{ url_for('static', filename='tool-signoffs-page.js') }}"></script>
+{% endblock %}
+
