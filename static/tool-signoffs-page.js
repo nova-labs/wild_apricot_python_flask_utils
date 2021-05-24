@@ -175,20 +175,23 @@ $(document).ready(() => {
   $(document).on('submit', 'form', function (e) {
     e.preventDefault();
 
-    ids = read_form_contact_ids();
-    promises = ids.map(function(id) {
-      const data = munge_form_with_contact(id);
-      return WAAPI.update_contact(data.Id, data, function(json) {
-        return json;
+    const count = $('input[name^="contact[]"]').length;
+    if (confirm(`Are you really, really sure you want to grant ${count} member(s) this signoff?`)) {
+      ids = read_form_contact_ids();
+      promises = ids.map(function(id) {
+        const data = munge_form_with_contact(id);
+        return WAAPI.update_contact(data.Id, data, function(json) {
+          return json;
+        });
       });
-    });
 
-    Promise.all(promises).then(function(results) {
-      render_success_alert(results);
-      reset_form();
-    }).catch(function(error) {
-      alert("Error Updating Contacts");
-    });
+      Promise.all(promises).then(function(results) {
+        render_success_alert(results);
+        reset_form();
+      }).catch(function(error) {
+        alert("Error Updating Contacts");
+      });
+    }
   });
 
   //
