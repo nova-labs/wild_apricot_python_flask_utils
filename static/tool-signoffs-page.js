@@ -120,8 +120,7 @@ $(document).ready(() => {
         SystemCode: system_code,
         Value: values,
       }],
-      Id: contact_id+99999999999999,
-      //Id: contact_id,
+      Id: contact_id,
     };
   }
 
