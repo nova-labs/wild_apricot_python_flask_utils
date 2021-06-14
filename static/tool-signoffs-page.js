@@ -30,6 +30,18 @@ $(document).ready(() => {
     });
   }
 
+  function has_go(contact) {
+    const signoffs = contact.FieldValues.find(function(v) {
+      return v.FieldName == "NL Signoffs and Categories";
+    });
+
+    const go_signoff = signoffs.Value.find(function (v) {
+      return v.Label ==  "[nlgroup] GO_New Member Orientation";
+    });
+
+    return (typeof go_signoff !== 'undefined')
+  }
+
   function set_signoff_field_system_code(code){
     $('#signoff_field_system_code').val(code);
   }
@@ -161,6 +173,7 @@ $(document).ready(() => {
   $(document).on('click', ".contact-to-add", function() {
     var tpl = $("#contact_fields_mustache").html();
     var vars = get_contact(this.getAttribute("value"));
+    vars.has_go = has_go(vars);
     $('#contact_field_list').append(Mustache.render(tpl, vars));
     $('#contact_search').prop('required', false);
     reset_contact_search();

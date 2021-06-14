@@ -94,6 +94,12 @@
                     <span class="float-right">
                       <a href="#" class="remove-contact text-danger ">remove</a>
                     </span>
+                    <br>
+                    {{^has_go}}
+                      <small>
+                        <span class="badge badge-warning">WARNING</span> This person does has not completed Green Orientation
+                      </small>
+                    {{/has_go}}
                   </li>
                 </script>
                 {% endraw %}
