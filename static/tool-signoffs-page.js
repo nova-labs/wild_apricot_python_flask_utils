@@ -187,7 +187,9 @@ $(document).ready(() => {
 
       Promise.all(promises).then(function(results) {
         render_success_alert(results);
-        reset_form();
+        get_contacts().then(function(resolve, reject) {
+          reset_form();
+        });
       }).catch(function(error) {
         alert("Error Updating Contacts");
       });
