@@ -16,6 +16,7 @@ bootstrap friendly manner #}
     window.wa_me={{ g.wa_me | tojson }};
     window.wa_admin={{ g.is_wa_admin | tojson }};
     window.wa_signoffer={{ g.is_wa_signoffer | tojson }};
+    window.formbot_url="{{ g.formbot_url }}";
     {% endif %}
   </script>
 {% endblock %}

@@ -155,6 +155,7 @@ def before_authenticated_request():
     g.is_wa_admin = is_account_admin(waco)
     g.is_wa_signoffer = has_wautils_signoff(waco)
     g.wa_url = os.getenv('WA_SITE_URL')
+    g.formbot_url = os.getenv('FORMBOT_URL')
 
 @app.errorhandler(401)
 def unauthorized_handler(error):
